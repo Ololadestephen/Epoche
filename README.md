@@ -17,7 +17,6 @@ First-time and untrusted native MON sends on Monad are automatically held for a 
 ```
 contracts/   Foundry — Epoche.sol + tests
 app/         Vite + React + wagmi — landing, FAQ, command center
-PLAN.md      Product / MVP notes
 ```
 
 ## Live
