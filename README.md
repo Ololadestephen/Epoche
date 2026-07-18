@@ -4,7 +4,7 @@
 
 First-time and untrusted native MON sends on Monad are automatically held for a short cool-off so you can cancel. Trusted recipients go instant.
 
-> Personal problem: crypto transfers are final the moment you confirm. Soft “are you sure?” dialogs get ignored. Epoché puts a real cancel window on first contact — not marketplace escrow.
+> Personal problem: crypto transfers are final the moment you confirm. Soft “are you sure?” dialogs get ignored. Epoché puts a real cancel window on first contact, not marketplace escrow.
 
 **Network:** Monad Testnet (`10143`)  
 **Contract:** [`0xca49Fd7c48194F06756fDD3c05CD8055CB652F65`](https://testnet.monadvision.com/address/0xca49Fd7c48194F06756fDD3c05CD8055CB652F65)
@@ -46,7 +46,7 @@ forge test
 ```bash
 cd contracts
 cp .env.example .env
-# Edit contracts/.env → PRIVATE_KEY=0x... (burner / test wallet only)
+# Edit contracts/.env → PRIVATE_KEY=0x... 
 
 # 15 min default / 30 min max cool-off
 forge script script/Deploy.s.sol:DeployScript \
@@ -81,16 +81,6 @@ Safety Mode is **automatic** — no “enable protection?” checkbox. After a p
 
 Epoché solves **sender-side mistakes** (phishing paste, fat-finger, first contact). It does **not** secure pay-for-goods: a malicious sender could cancel before unlock if a seller ships early. Cool-off is hard-capped at 30 minutes, finality is explicit in the UI, and recurring counterparties should be **trusted** (instant, no cancel).
 
-## Demo path (≤3 minutes)
-
-**Prep:** Monad Testnet wallet, test MON from the faucet, app at `/app`.
-
-1. **Connect** wallet on Monad Testnet.  
-2. **Send** a small amount to a **new** address → **Safety Mode on**.  
-3. **Cancel & reclaim** before unlock → funds return.  
-4. **Send again** → wait for unlock (or use a short cool-off preset).  
-5. **Release to recipient** (manual — no auto-send) → **Released · Final**.  
-6. **Trust** when prompted → next send is **Instant · trusted**.  
 
 Contract link is also in the command-center footer (MonadVision).
 
