@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+/*
+  Design system: black · chartreuse · teal · sand · white
+  Flat colors only — no gradients.
+*/
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-ink: #000000;
+  --color-ink-soft: #0a0c10;
+  --color-paper: #f4f1ea;
+  --color-paper-dim: #e4ddd0;
+  --color-sand: #e8e4dc;
+
+  --color-accent: #c5e063;
+  --color-accent-soft: #d9f99d;
+  --color-teal: #2dd4bf;
+  --color-teal-deep: #0f766e;
+  --color-cyan: #67e8f9;
+
+  --color-pending: #c5e063;
+  --color-final: #14b8a6;
+  --color-danger: #e07a6a;
+  --color-muted: #8b919a;
+  --color-forest: #3d4f2f;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--font-sans);
+    background: #000;
+    color: #f4f1ea;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: #c5e063;
+    color: #000;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/*
+  animated_rotate2.mp4 black plate → screen blend on app black
+*/
+.sphere-visual {
+  background: #000;
+  isolation: isolate;
+}
+
+.sphere-video {
+  background: #000;
+  mix-blend-mode: screen;
+  filter: contrast(1.06) brightness(1.1);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
