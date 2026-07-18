@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import trustIllustration from '../assets/trust-illustration.png'
 import { ScrollHero } from '../components/landing/ScrollHero'
 import { SphereVisual } from '../components/landing/SphereVisual'
 
@@ -191,12 +192,20 @@ export default function Landing() {
         <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             <div className="mx-auto flex w-full max-w-[min(92vw,720px)] items-center justify-center sm:max-w-[min(90vw,800px)] lg:max-w-[min(48vw,880px)]">
-              <SphereVisual
-                className="h-full w-full"
-                animate
-                preload="metadata"
-                alt="Safety Mode particle field"
-              />
+              {step.id === 'trust' ? (
+                <img
+                  src={trustIllustration}
+                  alt="Hand balancing a coin, representing a trusted recipient"
+                  className="w-full max-w-[30rem] rounded-2xl border border-white/10 shadow-2xl"
+                />
+              ) : (
+                <SphereVisual
+                  className="h-full w-full"
+                  animate
+                  preload="metadata"
+                  alt="Safety Mode particle field"
+                />
+              )}
             </div>
 
             <div className="text-center lg:text-left">
