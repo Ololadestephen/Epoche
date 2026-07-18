@@ -88,15 +88,15 @@ export default function Dashboard() {
                     {unlocked
                       ? 'Cancel window ended'
                       : pending.length > 1
-                        ? `${pending.length} waiting`
-                        : 'On hold'}
+                        ? `${pending.length} protected`
+                        : 'Protected'}
                   </p>
                   <p
                     className={`mt-1 font-display text-3xl tabular-nums sm:text-4xl ${
                       unlocked ? 'text-final' : 'text-pending'
                     }`}
                   >
-                    {unlocked ? 'Ready to claim' : formatCountdown(remaining)}
+                    {unlocked ? 'Claimable' : formatCountdown(remaining)}
                   </p>
                   <p className="mt-1 text-sm text-muted">
                     {unlocked

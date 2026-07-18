@@ -27,6 +27,8 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
   const [pendingTrust, setPendingTrust] = useState<Address | null>(null)
   const [handledHash, setHandledHash] = useState<string | undefined>()
   const [lastAction, setLastAction] = useState<'send' | 'trust' | null>(null)
+  const [reviewing, setReviewing] = useState(false)
+  const [lastSendProtected, setLastSendProtected] = useState<boolean | null>(null)
   const [coolOffSeconds, setCoolOffSeconds] = useState(15 * 60)
   const [coolOffSynced, setCoolOffSynced] = useState(false)
   const [recent, setRecent] = useState<string[]>([])
@@ -99,6 +101,7 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
     if (handledHash === writes.hash) return
     if (lastAction !== 'send') return
     setHandledHash(writes.hash)
+    setReviewing(false)
     onSuccess?.()
     if (toAddr) {
       pushRecentRecipient(toAddr)
@@ -146,7 +149,13 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!toAddr || !canSend) return
+    setReviewing(true)
+  }
+
+  const confirmSend = () => {
+    if (!toAddr || !canSend) return
     const coolOff = risk.protected ? coolOffSeconds : 0
+    setLastSendProtected(risk.protected)
     setLastAction('send')
     setHandledHash(undefined)
     writes.send(toAddr, amount.trim(), coolOff)
@@ -158,6 +167,8 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
     setPendingTrust(null)
     setHandledHash(undefined)
     setLastAction(null)
+    setReviewing(false)
+    setLastSendProtected(null)
   }
 
   if (!isConnected) {
@@ -190,6 +201,89 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
             </div>
           ))}
         </div>
+      </section>
+    )
+  }
+
+  if (reviewing && toAddr) {
+    return (
+      <section className="rounded-2xl border border-paper/10 bg-ink-soft px-4 py-5 sm:p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
+              Review before wallet
+            </p>
+            <h2 className="mt-2 font-display text-2xl tracking-tight text-paper sm:text-3xl">
+              {risk.protected ? 'Confirm protected send' : 'Confirm instant send'}
+            </h2>
+          </div>
+          <span
+            className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${
+              risk.protected
+                ? 'bg-pending/15 text-pending'
+                : 'bg-final/15 text-final'
+            }`}
+          >
+            {risk.protected ? 'Protected' : 'Instant'}
+          </span>
+        </div>
+
+        <dl className="mt-6 divide-y divide-paper/10 rounded-xl border border-paper/10 bg-ink px-4">
+          <div className="grid gap-1 py-3 sm:grid-cols-[7rem_1fr] sm:items-center">
+            <dt className="text-xs uppercase tracking-wider text-muted">Recipient</dt>
+            <dd className="break-all font-mono text-sm text-paper">{toAddr}</dd>
+          </div>
+          <div className="grid gap-1 py-3 sm:grid-cols-[7rem_1fr] sm:items-center">
+            <dt className="text-xs uppercase tracking-wider text-muted">Amount</dt>
+            <dd className="font-mono text-lg text-paper">{amount.trim()} MON</dd>
+          </div>
+          <div className="grid gap-1 py-3 sm:grid-cols-[7rem_1fr] sm:items-center">
+            <dt className="text-xs uppercase tracking-wider text-muted">Protection</dt>
+            <dd className={risk.protected ? 'text-pending' : 'text-final'}>
+              {risk.protected
+                ? `Cancelable for ${coolOffLabel}`
+                : 'Trusted recipient · no undo'}
+            </dd>
+          </div>
+          <div className="grid gap-1 py-3 sm:grid-cols-[7rem_1fr] sm:items-center">
+            <dt className="text-xs uppercase tracking-wider text-muted">Afterward</dt>
+            <dd className="text-sm leading-relaxed text-muted">
+              {risk.protected
+                ? 'When the timer ends, the MON can only be claimed to this address.'
+                : 'The MON transfers immediately when your wallet confirms.'}
+            </dd>
+          </div>
+        </dl>
+
+        <div className="mt-5 grid gap-2 sm:grid-cols-[1fr_auto]">
+          <button
+            type="button"
+            disabled={busy}
+            onClick={confirmSend}
+            className="rounded-xl bg-accent px-4 py-3.5 text-sm font-semibold text-ink transition enabled:hover:bg-accent-soft disabled:opacity-40"
+          >
+            {statusLabel ||
+              (risk.protected ? 'Confirm protected send' : 'Confirm instant send')}
+          </button>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => {
+              writes.reset()
+              setReviewing(false)
+            }}
+            className="rounded-xl border border-paper/15 px-4 py-3.5 text-sm text-muted transition hover:border-paper/30 hover:text-paper disabled:opacity-40"
+          >
+            Edit details
+          </button>
+        </div>
+
+        {writes.error && (
+          <p className="mt-3 text-sm text-danger">{humanError(writes.error)}</p>
+        )}
+        <p className="mt-4 font-mono text-[11px] text-muted">
+          From {address ? shortAddress(address, 5) : '—'}
+        </p>
       </section>
     )
   }
@@ -254,8 +348,7 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
             value={amount}
             onChange={(e) => {
               setAmount(e.target.value)
-              writes.reset()
-              setHandledHash(undefined)
+              resetFormNoise()
             }}
             placeholder="0.0"
             inputMode="decimal"
@@ -333,27 +426,35 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
               : statusLabel
                 ? statusLabel
                 : risk.protected
-                  ? 'Send with Safety Mode'
-                  : 'Send instantly'}
+                  ? 'Review protected send'
+                  : 'Review instant send'}
         </button>
 
         {writes.error && (
           <p className="text-sm text-danger">{humanError(writes.error)}</p>
         )}
         {writes.isSuccess && writes.hash && lastAction === 'send' && (
-          <p className="text-sm text-final">
-            {risk.protected
-              ? 'Safety Mode hold created. Check In flight →'
-              : 'Instant send confirmed.'}{' '}
+          <div className="rounded-xl border border-final/30 bg-final/10 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-final">
+              Transaction confirmed
+            </p>
+            <p className="mt-1 text-lg font-semibold text-paper">
+              {lastSendProtected ? 'Your MON is protected' : 'MON sent instantly'}
+            </p>
+            <p className="mt-1 text-sm leading-relaxed text-muted">
+              {lastSendProtected
+                ? 'The countdown and cancel action are now shown in Protected transfers.'
+                : 'This trusted recipient received the transfer without a hold.'}
+            </p>
             <a
               href={txExplorerUrl(writes.hash)}
               target="_blank"
               rel="noreferrer"
-              className="underline underline-offset-2"
+              className="mt-3 inline-block text-sm text-final underline underline-offset-2"
             >
               View transaction
             </a>
-          </p>
+          </div>
         )}
         {writes.isSuccess && writes.hash && lastAction === 'trust' && (
           <p className="text-sm text-final">

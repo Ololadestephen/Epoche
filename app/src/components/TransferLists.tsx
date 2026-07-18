@@ -50,10 +50,10 @@ function TransferCard({
     row.status === Status.Canceled
       ? 'Canceled'
       : row.status === Status.Claimed
-        ? 'Released · Final'
+        ? 'Complete'
         : unlocked
-          ? 'Unlocked'
-          : 'Safety Mode'
+          ? 'Claimable'
+          : 'Protected'
 
   return (
     <article className="rounded-xl border border-paper/10 bg-ink/60 p-4">
@@ -67,10 +67,10 @@ function TransferCard({
             {shortAddress(row.to)}
           </p>
           {role === 'recipient' && pending && (
-            <p className="mt-1 text-[11px] text-accent">Incoming hold · for you</p>
+            <p className="mt-1 text-[11px] text-accent">Incoming protected send</p>
           )}
           {role === 'sender' && pending && !unlocked && (
-            <p className="mt-1 text-[11px] text-muted">You can cancel until unlock</p>
+            <p className="mt-1 text-[11px] text-muted">You can still cancel</p>
           )}
           <div className="mt-1 flex flex-wrap gap-3 text-[11px]">
             <a
@@ -237,7 +237,7 @@ export function TransferLists({
       <section>
         <div className="mb-3 flex items-center justify-between gap-2">
           <h2 className="font-display text-xl text-paper sm:text-2xl">
-            In flight
+            Protected transfers
           </h2>
           <button
             type="button"
@@ -262,12 +262,11 @@ export function TransferLists({
         )}
         {showInitialLoad ? (
           <p className="rounded-xl border border-dashed border-paper/15 px-4 py-6 text-sm text-muted">
-            Loading holds…
+            Loading protected transfers…
           </p>
         ) : pending.length === 0 ? (
           <p className="rounded-xl border border-dashed border-paper/15 px-4 py-6 text-sm text-muted">
-            No protected sends waiting. Send to a new address to see Safety
-            Mode.
+            No protected transfers yet. Send to someone new to create one.
           </p>
         ) : (
           <div className="space-y-3">
@@ -301,7 +300,7 @@ export function TransferLists({
         {showInitialLoad ? (
           <p className="text-sm text-muted">Loading activity…</p>
         ) : history.length === 0 ? (
-          <p className="text-sm text-muted">No settled transfers yet.</p>
+          <p className="text-sm text-muted">No completed or canceled transfers yet.</p>
         ) : (
           <div className="space-y-3">
             {history.map((r) => (
@@ -329,6 +328,7 @@ export function TrustedPanel({ onChange }: { onChange?: () => void }) {
   const [addr, setAddr] = useState('')
   const [label, setLabel] = useState('')
   const [chips, setChips] = useState<string[]>([])
+  const [adding, setAdding] = useState(false)
   const [pending, setPending] = useState<{
     to: Address
     trust: boolean
@@ -352,6 +352,7 @@ export function TrustedPanel({ onChange }: { onChange?: () => void }) {
     if (pending.trust) {
       cacheTrustedAddress(pending.to)
       if (pending.label?.trim()) setTrustedLabel(pending.to, pending.label)
+      setAdding(false)
     } else {
       uncacheTrustedAddress(pending.to)
     }
@@ -373,36 +374,51 @@ export function TrustedPanel({ onChange }: { onChange?: () => void }) {
 
   return (
     <section className="rounded-2xl border border-paper/10 bg-ink-soft px-4 py-5 sm:p-6">
-      <h2 className="font-display text-xl text-paper sm:text-2xl">
-        People I trust
-      </h2>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="font-display text-xl text-paper sm:text-2xl">
+          People I trust
+        </h2>
+        <button
+          type="button"
+          onClick={() => setAdding((value) => !value)}
+          className="rounded-lg border border-paper/15 px-3 py-2 text-xs font-medium text-muted transition hover:border-paper/30 hover:text-paper"
+        >
+          {adding ? 'Close' : 'Add trusted person'}
+        </button>
+      </div>
       <p className="mt-1 text-sm text-muted">
-        Trusted recipients skip Safety Mode — instant, no cancel. Confirmed
-        on-chain.
+        Trusted recipients receive future sends instantly, with no cancel window.
       </p>
 
-      {chips.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-2">
+      {chips.length > 0 ? (
+        <div className="mt-4 space-y-2">
           {chips.map((a) => {
             const name = getTrustedLabel(a)
             return (
-              <span
+              <div
                 key={a}
-                className="inline-flex items-center gap-2 rounded-full border border-paper/15 bg-ink px-3 py-1.5 text-xs"
+                className="flex items-center justify-between gap-3 rounded-xl border border-paper/10 bg-ink px-3 py-3"
               >
-                <a
-                  href={addressExplorerUrl(a)}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-mono text-paper hover:text-accent"
-                  title={a}
-                >
-                  {name || shortAddress(a as Address, 4)}
-                </a>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <a
+                      href={addressExplorerUrl(a)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm font-medium text-paper hover:text-accent"
+                      title={a}
+                    >
+                      {name || shortAddress(a as Address, 5)}
+                    </a>
+                    <span className="rounded-full bg-final/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-final">
+                      Instant sends
+                    </span>
+                  </div>
+                  <p className="mt-1 truncate font-mono text-[11px] text-muted">{a}</p>
+                </div>
                 <button
                   type="button"
-                  className="text-muted hover:text-danger disabled:opacity-40"
-                  title="Untrust"
+                  className="shrink-0 text-xs text-muted hover:text-danger disabled:opacity-40"
                   disabled={busy}
                   onClick={() => {
                     setPending({ to: a as Address, trust: false })
@@ -410,59 +426,50 @@ export function TrustedPanel({ onChange }: { onChange?: () => void }) {
                     writes.setTrusted(a as Address, false)
                   }}
                 >
-                  ×
+                  Revoke
                 </button>
-              </span>
+              </div>
             )
           })}
         </div>
+      ) : (
+        <p className="mt-4 rounded-xl border border-dashed border-paper/15 px-4 py-4 text-sm text-muted">
+          No trusted people yet. After a protected send, you can choose who earns instant transfers.
+        </p>
       )}
 
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-        <input
-          value={addr}
-          onChange={(e) => setAddr(e.target.value.trim())}
-          placeholder="0x… to trust"
-          autoComplete="off"
-          className="min-w-0 flex-1 rounded-xl border border-paper/10 bg-ink px-4 py-3 font-mono text-sm outline-none focus:ring-2 focus:ring-accent/40"
-        />
-        <input
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
-          placeholder="Name (e.g. Mum)"
-          className="w-full rounded-xl border border-paper/10 bg-ink px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-accent/40 sm:w-36"
-        />
-      </div>
-      <div className="mt-2 flex flex-wrap gap-2">
-        <button
-          type="button"
-          disabled={!valid || busy}
-          onClick={() => {
-            const to = addr as Address
-            setPending({ to, trust: true, label })
-            setHandledHash(undefined)
-            writes.setTrusted(to, true)
-          }}
-          className="rounded-xl bg-paper/10 px-4 py-3 text-sm font-medium hover:bg-paper/15 disabled:opacity-40"
-        >
-          {busy && pending?.trust ? statusLabel || 'Confirm…' : 'Trust'}
-        </button>
-        <button
-          type="button"
-          disabled={!valid || busy}
-          onClick={() => {
-            const to = addr as Address
-            setPending({ to, trust: false })
-            setHandledHash(undefined)
-            writes.setTrusted(to, false)
-          }}
-          className="rounded-xl border border-paper/15 px-4 py-3 text-sm text-muted hover:text-paper disabled:opacity-40"
-        >
-          {busy && pending && !pending.trust
-            ? statusLabel || 'Confirm…'
-            : 'Untrust'}
-        </button>
-      </div>
+      {adding && (
+        <div className="mt-4 rounded-xl border border-paper/10 bg-ink p-4">
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <input
+              value={addr}
+              onChange={(e) => setAddr(e.target.value.trim())}
+              placeholder="0x… wallet address"
+              autoComplete="off"
+              className="min-w-0 flex-1 rounded-xl border border-paper/10 bg-ink-soft px-4 py-3 font-mono text-sm outline-none focus:ring-2 focus:ring-accent/40"
+            />
+            <input
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="Name (e.g. Mum)"
+              className="w-full rounded-xl border border-paper/10 bg-ink-soft px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-accent/40 sm:w-40"
+            />
+          </div>
+          <button
+            type="button"
+            disabled={!valid || busy}
+            onClick={() => {
+              const to = addr as Address
+              setPending({ to, trust: true, label })
+              setHandledHash(undefined)
+              writes.setTrusted(to, true)
+            }}
+            className="mt-2 rounded-xl bg-paper/10 px-4 py-3 text-sm font-medium hover:bg-paper/15 disabled:opacity-40"
+          >
+            {busy && pending?.trust ? statusLabel || 'Confirm…' : 'Trust this person'}
+          </button>
+        </div>
+      )}
       <p className="mt-3 text-xs text-muted">
         Trust is on-chain. Names are only saved in this browser.
       </p>
