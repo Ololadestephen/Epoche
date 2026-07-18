@@ -1,8 +1,8 @@
 # Epoché
 
-**Suspension before finality.**
+**Trust should be earned, not assumed.**
 
-First-time and untrusted native MON sends on Monad are automatically held for a short cool-off so you can cancel. Trusted recipients go instant.
+Epoché is a first-contact trust layer for native MON sends on Monad. New and untrusted recipients are automatically held for a short cool-off so you can cancel a mistake. People you trust go instant.
 
 > Personal problem: crypto transfers are final the moment you confirm. Soft “are you sure?” dialogs get ignored. Epoché puts a real cancel window on first contact, not marketplace escrow.
 
@@ -73,7 +73,7 @@ Copy the new address into `app/.env` as `VITE_EPOCHE_ADDRESS`.
 
 | Path | When | Behavior |
 |------|------|----------|
-| **Safety Mode** | Recipient not trusted | Hold → cancel until unlock → manual release/claim |
+| **Safety Mode** | Recipient not trusted | Hold → sender can cancel until unlock → anyone can claim only to the recipient |
 | **Instant** | Recipient trusted | Immediate transfer, no undo |
 
 Safety Mode is **automatic** — no “enable protection?” checkbox. After a protected send, the app offers **Trust** so the next payment is instant.
@@ -87,7 +87,7 @@ Safety Mode is **automatic** — no “enable protection?” checkbox. After a p
 
 ## Threat model
 
-Epoché solves **sender-side mistakes** (phishing paste, fat-finger, first contact). It does **not** secure pay-for-goods: a malicious sender could cancel before unlock if a seller ships early. Cool-off is hard-capped at 30 minutes, finality is explicit in the UI, and recurring counterparties should be **trusted** (instant, no cancel).
+Epoché solves **sender-side mistakes** (phishing paste, fat-finger, first contact). It does **not** secure pay-for-goods: a malicious sender could cancel before unlock if a seller ships early. Cool-off is hard-capped at 30 minutes, and recurring counterparties should be **trusted** (instant, no cancel). After unlock, a claim can be submitted by anyone, but the contract can only pay the fixed recipient.
 
 
 Contract link is also in the command-center footer (MonadVision).

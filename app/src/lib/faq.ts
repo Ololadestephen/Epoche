@@ -4,7 +4,7 @@ export type FaqItem = { q: string; a: string }
 export const FAQ_ITEMS: FaqItem[] = [
   {
     q: 'What is Epoché?',
-    a: 'Epoché is a personal onchain hold for first-time or high-risk native MON sends on Monad. When Safety Mode is on, funds sit in the contract for a short cool-off so you can cancel a mistake. Trusted recipients get instant sends with no undo. The name comes from the Greek ἐποχή — suspension of judgment.',
+    a: 'Epoché is a first-contact trust layer for native MON sends on Monad. New recipients are held onchain for a short cool-off so you can cancel a mistake. People you trust get instant sends with no undo. The name comes from the Greek ἐποχή — suspension of judgment.',
   },
   {
     q: 'Is this marketplace escrow for goods?',
@@ -20,11 +20,11 @@ export const FAQ_ITEMS: FaqItem[] = [
   },
   {
     q: 'Can I cancel after the cool-off ends?',
-    a: 'No. Before unlock, only the sender can cancel and reclaim. After unlock, cancel is disabled and release (claim) pays the fixed recipient. That keeps the product from becoming long-lived commerce escrow.',
+    a: 'No. Before unlock, only the sender can cancel and reclaim. After unlock, cancellation is disabled and anyone can claim the funds—but only to the fixed recipient. That keeps the product from becoming long-lived commerce escrow.',
   },
   {
-    q: 'Why do I need a wallet popup to release?',
-    a: 'Onchain value cannot move without a transaction. When the hold ends, release pays gas and sends MON to the recipient. Epoché does not auto-release—that caused wallet spam and UI thrash. You tap Release when ready.',
+    q: 'What happens when the cool-off ends?',
+    a: 'The sender can no longer cancel. Anyone can submit the claim transaction and pay gas, but the contract always sends the MON only to the recipient fixed when the hold was created. Epoché does not auto-submit transactions from your wallet.',
   },
   {
     q: 'Can I choose the wait time?',
@@ -36,7 +36,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   },
   {
     q: 'What happens if the recipient never claims?',
-    a: 'After unlock, release can be called by you or anyone else with gas. Funds stay in the contract until claim succeeds. Share the hold receipt (/t/:id) so the other party can see status.',
+    a: 'After unlock, claim can be called by you or anyone else with gas. Funds stay in the contract until a claim succeeds, and the claim can only pay the fixed recipient. Share the hold receipt (/t/:id) so the other party can see status.',
   },
   {
     q: 'Is my money safe while it’s held?',
@@ -48,6 +48,6 @@ export const FAQ_ITEMS: FaqItem[] = [
   },
   {
     q: 'How do I demo this for judges?',
-    a: 'Connect on Monad testnet → send a small amount to a new address → cancel once to show reclaim → send again → wait for unlock (or use a DEMO cool-off deploy) → tap Release → Trust when prompted → send again and show Instant. Contract link is in the command center footer.',
+    a: 'Connect on Monad testnet → send a small amount to a new address → cancel once to show reclaim → trust that address and show the next send is instant. For the claim path, send to a second new address, wait for unlock (or use a DEMO cool-off deploy), then claim to the recipient. Contract link is in the command center footer.',
   },
 ]

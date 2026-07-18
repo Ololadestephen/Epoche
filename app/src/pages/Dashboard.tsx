@@ -94,7 +94,7 @@ export default function Dashboard() {
                 <div>
                   <p className="text-xs uppercase tracking-wider text-muted">
                     {unlocked
-                      ? 'Ready to send'
+                      ? 'Cancel window ended'
                       : pending.length > 1
                         ? `${pending.length} waiting`
                         : 'On hold'}
@@ -104,11 +104,11 @@ export default function Dashboard() {
                       unlocked ? 'text-final' : 'text-pending'
                     }`}
                   >
-                    {unlocked ? 'Time’s up' : formatCountdown(remaining)}
+                    {unlocked ? 'Ready to claim' : formatCountdown(remaining)}
                   </p>
                   <p className="mt-1 text-sm text-muted">
                     {unlocked
-                      ? 'Tap Send below when you’re ready.'
+                      ? 'Funds can now be claimed to the recipient. You can no longer cancel.'
                       : 'You can cancel and get the money back until the timer ends.'}
                   </p>
                 </div>
@@ -131,13 +131,13 @@ export default function Dashboard() {
                         }`}
                       >
                         #{r.id.toString()} ·{' '}
-                        {done ? 'ready' : formatCountdown(rem)}
+                        {done ? 'claimable' : formatCountdown(rem)}
                       </span>
                     )
                   })}
                   {unlockedCount > 0 && (
                     <span className="text-[11px] text-final">
-                      {unlockedCount} ready
+                      {unlockedCount} claimable
                     </span>
                   )}
                 </div>

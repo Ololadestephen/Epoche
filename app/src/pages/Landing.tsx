@@ -28,8 +28,8 @@ const STEPS = [
   {
     id: 'release',
     label: '4',
-    title: 'Send when ready',
-    body: 'When time’s up, you tap Send. It does not go through by itself — you choose when.',
+    title: 'Claim after the pause',
+    body: 'When time is up, the cancel window ends. The funds can then be claimed only by the recipient.',
     color: 'bg-cyan text-black',
   },
   {

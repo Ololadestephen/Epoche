@@ -25,7 +25,7 @@ export function useUnlockNotify(rows: TransferRow[], enabled: boolean) {
         notified.current.add(key)
         try {
           new Notification('Epoché — hold unlocked', {
-            body: `Transfer #${key} is ready. Tap Release in the app.`,
+            body: `Transfer #${key} is claimable. The cancel window has ended.`,
             tag: `epoche-unlock-${key}`,
           })
         } catch {

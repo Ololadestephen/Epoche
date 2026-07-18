@@ -114,8 +114,8 @@ function TransferCard({
       {pending && unlocked && (
         <p className="mt-3 text-sm text-final">
           {role === 'recipient'
-            ? 'Hold ended — you (or the sender) can release funds to you.'
-            : 'Hold ended — tap Release when you’re ready.'}
+            ? 'The cancel window ended. Anyone can claim these funds to you.'
+            : 'The cancel window ended. Funds can now be claimed only to the recipient.'}
         </p>
       )}
 
@@ -141,7 +141,7 @@ function TransferCard({
             ? busyLabel || 'Confirm…'
             : role === 'recipient'
               ? 'Claim funds'
-              : 'Release to recipient'}
+              : 'Claim to recipient'}
         </button>
       )}
     </article>
@@ -348,7 +348,9 @@ export function TrustedPanel({ onChange }: { onChange?: () => void }) {
 
   return (
     <section className="rounded-2xl border border-paper/10 bg-ink-soft px-4 py-5 sm:p-6">
-      <h2 className="font-display text-xl text-paper sm:text-2xl">Trusted</h2>
+      <h2 className="font-display text-xl text-paper sm:text-2xl">
+        People I trust
+      </h2>
       <p className="mt-1 text-sm text-muted">
         Trusted recipients skip Safety Mode — instant, no cancel. Confirmed
         on-chain.
@@ -402,7 +404,7 @@ export function TrustedPanel({ onChange }: { onChange?: () => void }) {
         <input
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          placeholder="Label (optional)"
+          placeholder="Name (e.g. Mum)"
           className="w-full rounded-xl border border-paper/10 bg-ink px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-accent/40 sm:w-36"
         />
       </div>
@@ -436,6 +438,9 @@ export function TrustedPanel({ onChange }: { onChange?: () => void }) {
             : 'Untrust'}
         </button>
       </div>
+      <p className="mt-3 text-xs text-muted">
+        Trust is on-chain. Names are only saved in this browser.
+      </p>
       {writes.error && (
         <p className="mt-2 text-sm text-danger">{humanError(writes.error)}</p>
       )}

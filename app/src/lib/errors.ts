@@ -12,13 +12,13 @@ export function humanError(e: unknown): string {
   if (s.includes('user rejected') || s.includes('user denied'))
     return 'You rejected the transaction in your wallet.'
   if (s.includes('stilllocked') || s.includes('still locked'))
-    return 'Cool-off is not over yet — wait for unlock, then release.'
+    return 'Cool-off is not over yet — wait for unlock, then claim to the recipient.'
   if (s.includes('unlockpassed') || s.includes('unlock passed'))
-    return 'Cancel window closed — release to recipient instead.'
+    return 'Cancel window closed — claim to the recipient instead.'
   if (s.includes('notsender') || s.includes('not sender'))
     return 'Only the sender can cancel this transfer.'
   if (s.includes('notpending') || s.includes('not pending'))
-    return 'This transfer is already settled (canceled or released).'
+    return 'This transfer is already settled (canceled or claimed).'
   if (s.includes('coolofftoolong') || s.includes('cool-off too'))
     return 'Hold duration is too long — pick 5, 15, or 30 minutes.'
   if (s.includes('zeroamount') || s.includes('zero amount'))
