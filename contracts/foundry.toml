@@ -1,0 +1,13 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc = "0.8.24"
+optimizer = true
+optimizer_runs = 200
+ffi = false
+
+# Monad testnet — forge script --rpc-url $MONAD_RPC
+[rpc_endpoints]
+monad_testnet = "${MONAD_RPC:-https://testnet-rpc.monad.xyz}"
+monad_mainnet = "${MONAD_MAINNET_RPC:-https://rpc.monad.xyz}"
