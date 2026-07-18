@@ -6,6 +6,7 @@ First-time and untrusted native MON sends on Monad are automatically held for a 
 
 > Personal problem: crypto transfers are final the moment you confirm. Soft “are you sure?” dialogs get ignored. Epoché puts a real cancel window on first contact, not marketplace escrow.
 
+**Live app:** https://epoche-five.vercel.app/  
 **Network:** Monad Testnet (`10143`)  
 **Contract:** [`0xca49Fd7c48194F06756fDD3c05CD8055CB652F65`](https://testnet.monadvision.com/address/0xca49Fd7c48194F06756fDD3c05CD8055CB652F65)
 
@@ -19,7 +20,15 @@ app/         Vite + React + wagmi — landing, FAQ, command center
 PLAN.md      Product / MVP notes
 ```
 
-## Quick start (app)
+## Live
+
+- **App:** https://epoche-five.vercel.app/  
+- **Command center:** https://epoche-five.vercel.app/app  
+- **FAQ:** https://epoche-five.vercel.app/faq  
+
+Connect a wallet on **Monad Testnet** (`10143`). Faucet: https://faucet.monad.xyz
+
+## Quick start (local)
 
 ```bash
 cd app
@@ -28,7 +37,7 @@ npm install
 npm run dev
 ```
 
-Open the local URL → **Open app** / `/app` → connect a wallet on **Monad Testnet** → faucet: https://faucet.monad.xyz
+Open the local URL → **Open app** / `/app` → connect on Monad Testnet.
 
 ```bash
 npm run build   # production build
