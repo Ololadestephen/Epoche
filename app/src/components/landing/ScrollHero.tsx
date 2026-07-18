@@ -74,27 +74,28 @@ export function ScrollHero() {
           }}
         >
           <p className="mb-5 text-xs font-medium uppercase tracking-[0.28em] text-white">
-            Onchain · Monad · personal money safety
+            Send crypto with a safety net
           </p>
           <h1 className="max-w-3xl font-display text-4xl font-semibold leading-[1.08] text-white sm:text-5xl md:text-[3.5rem]">
-            Where urgency becomes judgment.
+            A few minutes to undo a wrong send.
           </h1>
           <p className="mx-auto mt-6 max-w-lg text-sm font-normal leading-relaxed text-white sm:text-[15px]">
-            One wrong paste and funds are gone. Epoché holds first-time sends
-            for a short cool-off so you can cancel — suspension before finality.
+            When you pay someone new, we hold the money briefly so you can
+            cancel if the address is wrong. People you trust get paid right
+            away.
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <Link
               to="/app"
               className="rounded-sm bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-accent-soft"
             >
-              Launch Epoché
+              Open app
             </Link>
             <a
               href="#how"
               className="rounded-sm border border-white/40 bg-black/40 px-6 py-3 text-sm font-medium text-white transition hover:border-white/60"
             >
-              Scroll to explore
+              How it works
             </a>
           </div>
         </div>
@@ -107,12 +108,12 @@ export function ScrollHero() {
           }}
         >
           <p className="font-display text-[1.65rem] font-semibold leading-snug text-white sm:text-4xl md:text-[2.75rem]">
-            Hold. Decide.
+            Hold. Check.
             <br />
-            Then finalize.
+            Then send.
           </p>
           <p className="mt-4 max-w-xs text-sm text-white">
-            Safety Mode · cancel window · release or trust
+            Pause · cancel if wrong · or let it through
           </p>
           <Link
             to="/app"

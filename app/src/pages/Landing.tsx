@@ -6,37 +6,37 @@ import { SphereVisual } from '../components/landing/SphereVisual'
 const STEPS = [
   {
     id: 'safety',
-    label: 'Sm',
-    title: 'Safety Mode',
-    body: 'First payment to an address, a paste from clipboard, or an unusual amount — protection activates automatically. No checkbox.',
+    label: '1',
+    title: 'Safety hold',
+    body: 'Paying someone new? We hold the money for a short time automatically. No extra switches to flip.',
     color: 'bg-accent text-black',
   },
   {
     id: 'hold',
-    label: 'Hd',
-    title: 'Hold window',
-    body: 'Funds sit suspended for 5, 15, or 30 minutes. You can still cancel. The clock is onchain, not a soft warning.',
+    label: '2',
+    title: 'Wait a bit',
+    body: 'Pick 5, 15, or 30 minutes. The money sits in the app until the timer ends — or you cancel.',
     color: 'bg-teal text-black',
   },
   {
     id: 'cancel',
-    label: 'Cn',
-    title: 'Cancel',
-    body: 'Wrong address? Phishing paste? Reclaim before unlock. One click, full refund of the held amount.',
+    label: '3',
+    title: 'Cancel if wrong',
+    body: 'Wrong address or a bad paste? Cancel before the timer ends and you get the money back.',
     color: 'bg-accent-soft text-black',
   },
   {
     id: 'release',
-    label: 'Rl',
-    title: 'Release',
-    body: 'When the window ends, release finalizes to the recipient. Auto-requested if your wallet is open — or release manually.',
+    label: '4',
+    title: 'Send when ready',
+    body: 'When time’s up, you tap Send. It does not go through by itself — you choose when.',
     color: 'bg-cyan text-black',
   },
   {
     id: 'trust',
-    label: 'Tr',
-    title: 'Trust',
-    body: 'Mark a recipient as trusted. Next send is instant — no hold, no undo. Friction only where risk is real.',
+    label: '5',
+    title: 'Trust next time',
+    body: 'Know them? Mark trusted. Next payment to that person is instant — no hold.',
     color: 'bg-white text-black',
   },
 ] as const
@@ -98,17 +98,17 @@ export default function Landing() {
         <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-2 lg:items-center lg:py-28">
           <div>
             <h2 className="font-display text-3xl font-semibold leading-tight sm:text-4xl md:text-5xl">
-              A send that
+              Crypto sends are
               <br />
-              operates with care
+              final. That’s the problem.
             </h2>
             <ul className="mt-8 space-y-3 text-sm text-[#12141a]/70 sm:text-base">
               {[
-                'catch phishing pastes before they’re final',
-                'undo a fat-finger to the wrong address',
-                'hold first payments automatically',
-                'choose 5 / 15 / 30 minute windows',
-                'trust people you already know — go instant',
+                'catch a bad paste before money is gone',
+                'undo a typo to the wrong address',
+                'first payments to new people get a hold',
+                'choose a 5, 15, or 30 minute wait',
+                'people you trust get paid instantly',
               ].map((item) => (
                 <li key={item} className="flex gap-3">
                   <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-forest" />
@@ -121,14 +121,14 @@ export default function Landing() {
           <div className="relative mx-auto w-full max-w-md">
             <div className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-xl backdrop-blur">
               <p className="text-center text-[10px] font-semibold uppercase tracking-[0.25em] text-forest">
-                Epoché core
+                In short
               </p>
               <div className="mt-6 grid grid-cols-2 gap-3 text-center text-xs">
                 {[
-                  ['Safety Mode', 'auto on risk'],
-                  ['Hold', '≤ 30 min'],
-                  ['Cancel', 'before unlock'],
-                  ['Release', 'after unlock'],
+                  ['Hold', 'for new people'],
+                  ['Wait', 'up to 30 min'],
+                  ['Cancel', 'if it’s wrong'],
+                  ['Trust', 'then go fast'],
                 ].map(([t, s]) => (
                   <div
                     key={t}
@@ -140,8 +140,8 @@ export default function Landing() {
                 ))}
               </div>
               <div className="mt-4 rounded-xl bg-black px-4 py-3 text-center">
-                <p className="font-mono text-[11px] text-accent">
-                  suspension → judgment → finality
+                <p className="text-[11px] text-accent">
+                  Pause → check → send
                 </p>
               </div>
             </div>
@@ -152,22 +152,22 @@ export default function Landing() {
       <section id="features" className="bg-white text-[#12141a]">
         <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
           <h2 className="text-center font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-            Built for the moment
-            <br className="hidden sm:block" /> before regret
+            Built for that
+            <br className="hidden sm:block" /> “wait, wrong address” moment
           </h2>
           <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
             {[
               {
-                title: 'Personal problem first',
-                body: 'Not another swap UI. Epoché exists because hot sends have no undo — and soft “are you sure?” modals get clicked through.',
+                title: 'A real problem',
+                body: 'Most apps only ask “are you sure?” You click yes in a rush. Here the money actually waits.',
               },
               {
-                title: 'Onchain, not vibes',
-                body: 'Caps, holds, and cancel rights live in the contract. The app just makes the path honest: send → hold → cancel or release.',
+                title: 'Rules you can trust',
+                body: 'The hold and cancel rights live on the blockchain — not just a warning screen.',
               },
               {
-                title: 'Elegant by subtraction',
-                body: 'Native MON. One threat model. No multi-feature safety suite. Optional hold time. Automatic Safety Mode.',
+                title: 'Simple on purpose',
+                body: 'Only native MON. One clear path: hold, cancel, or send. No clutter.',
               },
             ].map((f) => (
               <div key={f.title} className="text-center md:text-left">
@@ -201,7 +201,7 @@ export default function Landing() {
 
             <div className="text-center lg:text-left">
               <p className="text-xs font-medium uppercase tracking-[0.28em] text-accent">
-                Safety Mode
+                How it works
               </p>
               <div className="mt-3 flex items-center justify-center gap-3 lg:justify-start">
                 <button
@@ -252,7 +252,7 @@ export default function Landing() {
                 to="/app"
                 className="mt-8 inline-block rounded-sm bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-accent-soft"
               >
-                Try it on Monad
+                Try a send
               </Link>
               <p className="mt-6 text-sm text-white/50">
                 Questions?{' '}
@@ -260,7 +260,7 @@ export default function Landing() {
                   to="/faq"
                   className="text-accent underline-offset-2 hover:underline"
                 >
-                  Read the FAQ
+                  FAQ
                 </Link>
               </p>
             </div>
@@ -273,8 +273,8 @@ export default function Landing() {
           <div>
             <LogoMark />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/45">
-              Suspension before finality. Personal onchain hold windows for
-              first-contact sends on Monad.
+              A short pause when you send crypto to someone new — so mistakes
+              aren’t forever.
             </p>
           </div>
           <div>

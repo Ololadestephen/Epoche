@@ -47,8 +47,6 @@ export default function Dashboard() {
     void refresh()
   }
 
-  const longCoolOff = (defaultCoolOff ?? 0) >= 10 * 60
-
   return (
     <div className="min-h-screen bg-ink text-paper">
       <div className="mx-auto max-w-5xl px-4 pb-16 pt-5 sm:px-6">
@@ -69,11 +67,10 @@ export default function Dashboard() {
               </Link>
             </div>
             <h1 className="mt-1 font-display text-3xl tracking-tight text-paper sm:text-4xl">
-              Command center
+              Send
             </h1>
             <p className="mt-1 max-w-md text-sm text-muted">
-              Safety Mode holds first sends. Cancel before unlock — or release
-              when the window ends.
+              New people get a short hold so you can undo a mistake.
             </p>
           </div>
           <ConnectButton />
@@ -83,15 +80,13 @@ export default function Dashboard() {
 
         <div className="mb-6 rounded-2xl border border-paper/10 bg-ink-soft px-4 py-4 sm:px-6">
           {!isConnected ? (
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-xs uppercase tracking-wider text-muted">
-                  Status
-                </p>
-                <p className="mt-1 font-display text-2xl text-paper">
-                  Connect a wallet to begin
-                </p>
-              </div>
+            <div>
+              <p className="text-xs uppercase tracking-wider text-muted">
+                Status
+              </p>
+              <p className="mt-1 font-display text-2xl text-paper">
+                Connect your wallet
+              </p>
             </div>
           ) : primaryPending ? (
             <div className="space-y-3">
@@ -99,26 +94,26 @@ export default function Dashboard() {
                 <div>
                   <p className="text-xs uppercase tracking-wider text-muted">
                     {unlocked
-                      ? 'Ready to release'
+                      ? 'Ready to send'
                       : pending.length > 1
-                        ? `${pending.length} holds · Safety Mode`
-                        : 'Safety Mode on'}
+                        ? `${pending.length} waiting`
+                        : 'On hold'}
                   </p>
                   <p
                     className={`mt-1 font-display text-3xl tabular-nums sm:text-4xl ${
                       unlocked ? 'text-final' : 'text-pending'
                     }`}
                   >
-                    {unlocked ? 'Unlocked' : formatCountdown(remaining)}
+                    {unlocked ? 'Time’s up' : formatCountdown(remaining)}
                   </p>
                   <p className="mt-1 text-sm text-muted">
                     {unlocked
-                      ? 'Tap Release on the hold below when you’re ready (no auto-send).'
-                      : 'Cancel anytime before unlock to reclaim funds.'}
+                      ? 'Tap Send below when you’re ready.'
+                      : 'You can cancel and get the money back until the timer ends.'}
                   </p>
                 </div>
                 <p className="font-mono text-xs text-muted">
-                  Next #{primaryPending.id.toString()}
+                  #{primaryPending.id.toString()}
                 </p>
               </div>
               {pending.length > 1 && (
@@ -136,13 +131,13 @@ export default function Dashboard() {
                         }`}
                       >
                         #{r.id.toString()} ·{' '}
-                        {done ? 'release' : formatCountdown(rem)}
+                        {done ? 'ready' : formatCountdown(rem)}
                       </span>
                     )
                   })}
                   {unlockedCount > 0 && (
                     <span className="text-[11px] text-final">
-                      {unlockedCount} ready to release
+                      {unlockedCount} ready
                     </span>
                   )}
                 </div>
@@ -154,48 +149,20 @@ export default function Dashboard() {
                 Status
               </p>
               <p className="mt-1 font-display text-2xl text-paper sm:text-3xl">
-                {loading && rows.length === 0
-                  ? 'Loading holds…'
-                  : 'No holds in flight'}
+                {loading && rows.length === 0 ? 'Loading…' : 'Nothing on hold'}
               </p>
               <p className="mt-1 text-sm text-muted">
                 {loading && rows.length === 0
-                  ? 'Fetching Safety Mode activity from Monad.'
-                  : (
-                      <>
-                        Send to a{' '}
-                        <strong className="text-paper">new address</strong> to
-                        trigger Safety Mode.
-                      </>
-                    )}
+                  ? 'Checking your sends…'
+                  : 'Send to someone new to try a hold.'}
               </p>
             </div>
           )}
         </div>
 
-        <div className="mb-6 rounded-xl border border-paper/10 bg-ink px-4 py-3 text-xs text-muted sm:text-sm">
-          <span className="font-medium text-accent">Flow: </span>
-          new address → Safety Mode → cancel or wait → release → trust → next
-          send instant
-        </div>
-
-        {longCoolOff && (
-          <div className="mb-6 rounded-xl border border-paper/10 bg-ink-soft px-4 py-3 text-xs text-muted sm:text-sm">
-            <span className="font-medium text-paper">Tip: </span>
-            Default cool-off is{' '}
-            {defaultCoolOff != null
-              ? `${Math.round(defaultCoolOff / 60)} minutes`
-              : 'long'}
-            . For faster demos, redeploy with{' '}
-            <code className="font-mono text-accent">DEMO=true</code> (2 min
-            hold).
-          </div>
-        )}
-
         {!isContractConfigured && (
           <div className="mb-6 rounded-xl border border-pending/30 bg-pending/10 px-4 py-3 text-sm text-pending">
-            Contract not configured. Set{' '}
-            <code className="font-mono">VITE_EPOCHE_ADDRESS</code> in{' '}
+            App is not set up yet. Add the contract address in{' '}
             <code className="font-mono">app/.env</code>.
           </div>
         )}
@@ -218,16 +185,15 @@ export default function Dashboard() {
 
         <footer className="mt-12 space-y-2 border-t border-paper/10 pt-6 text-xs text-muted">
           <p>
-            <strong className="text-paper/80">Epoché</strong> is not marketplace
-            escrow. One-sided cancel before unlock only. Sellers should wait
-            until Final before shipping goods.{' '}
+            Not for buying goods — only you can cancel, and only before the
+            timer ends.{' '}
             <Link to="/faq" className="text-accent hover:underline">
               FAQ
             </Link>
           </p>
           {isContractConfigured && (
             <p className="break-all font-mono">
-              Details · cool-off{' '}
+              Hold{' '}
               {defaultCoolOff != null
                 ? `${Math.round(defaultCoolOff / 60)}m`
                 : '—'}{' '}
