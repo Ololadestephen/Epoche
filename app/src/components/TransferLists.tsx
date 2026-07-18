@@ -181,9 +181,34 @@ export function TransferLists({
 
   if (!address) {
     return (
-      <div className="rounded-2xl border border-dashed border-paper/15 px-4 py-8 text-center text-sm text-muted">
-        Connect a wallet to see Safety Mode holds and activity.
-      </div>
+      <section className="rounded-2xl border border-paper/10 bg-ink-soft p-5 sm:p-6">
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
+          How the protection works
+        </p>
+        <h2 className="mt-2 font-display text-2xl text-paper sm:text-3xl">
+          Pause before finality.
+        </h2>
+        <ol className="mt-6 space-y-4">
+          {[
+            ['New recipient', 'Your MON enters a short onchain hold.'],
+            ['Still in control', 'Cancel any time before the timer ends.'],
+            ['Trust earned', 'Mark people you know for instant future sends.'],
+          ].map(([title, detail], index) => (
+            <li key={title} className="flex gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-accent/40 text-[11px] font-semibold text-accent">
+                {index + 1}
+              </span>
+              <div>
+                <p className="text-sm font-medium text-paper">{title}</p>
+                <p className="mt-0.5 text-sm leading-relaxed text-muted">{detail}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-6 border-t border-paper/10 pt-4 text-xs leading-relaxed text-muted">
+          Epoché is for sender-side mistakes, not payments for goods.
+        </p>
+      </section>
     )
   }
 

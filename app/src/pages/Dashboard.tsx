@@ -78,17 +78,9 @@ export default function Dashboard() {
 
         <NetworkBanner />
 
-        <div className="mb-6 rounded-2xl border border-paper/10 bg-ink-soft px-4 py-4 sm:px-6">
-          {!isConnected ? (
-            <div>
-              <p className="text-xs uppercase tracking-wider text-muted">
-                Status
-              </p>
-              <p className="mt-1 font-display text-2xl text-paper">
-                Connect your wallet
-              </p>
-            </div>
-          ) : primaryPending ? (
+        {isConnected && (
+          <div className="mb-6 rounded-2xl border border-paper/10 bg-ink-soft px-4 py-4 sm:px-6">
+            {primaryPending ? (
             <div className="space-y-3">
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
@@ -143,22 +135,23 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
-          ) : (
-            <div>
-              <p className="text-xs uppercase tracking-wider text-muted">
-                Status
-              </p>
-              <p className="mt-1 font-display text-2xl text-paper sm:text-3xl">
-                {loading && rows.length === 0 ? 'Loading…' : 'Nothing on hold'}
-              </p>
-              <p className="mt-1 text-sm text-muted">
-                {loading && rows.length === 0
-                  ? 'Checking your sends…'
-                  : 'Send to someone new to try a hold.'}
-              </p>
-            </div>
-          )}
-        </div>
+            ) : (
+              <div>
+                <p className="text-xs uppercase tracking-wider text-muted">
+                  Your safety status
+                </p>
+                <p className="mt-1 font-display text-2xl text-paper sm:text-3xl">
+                  {loading && rows.length === 0 ? 'Checking activity…' : 'No active holds'}
+                </p>
+                <p className="mt-1 text-sm text-muted">
+                  {loading && rows.length === 0
+                    ? 'Loading your protected sends from Monad.'
+                    : 'Send to someone new and you will get time to catch a mistake.'}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {!isContractConfigured && (
           <div className="mb-6 rounded-xl border border-pending/30 bg-pending/10 px-4 py-3 text-sm text-pending">
@@ -170,7 +163,7 @@ export default function Dashboard() {
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="min-w-0 space-y-6">
             <SendPanel onSuccess={bump} />
-            <TrustedPanel onChange={bump} />
+            {isConnected && <TrustedPanel onChange={bump} />}
           </div>
           <div className="min-w-0">
             <TransferLists

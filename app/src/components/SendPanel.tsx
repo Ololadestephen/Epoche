@@ -160,6 +160,40 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
     setLastAction(null)
   }
 
+  if (!isConnected) {
+    return (
+      <section className="rounded-2xl border border-paper/10 bg-ink-soft px-4 py-5 sm:p-6">
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
+          Your safer first send
+        </p>
+        <h2 className="mt-2 font-display text-2xl tracking-tight text-paper sm:text-3xl">
+          Connect to start
+        </h2>
+        <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
+          Connect your wallet above. New recipients get a short onchain hold;
+          people you trust are paid instantly.
+        </p>
+        <div className="mt-5 grid gap-2 text-center text-xs sm:grid-cols-3">
+          {[
+            ['1', 'Send to someone new'],
+            ['2', 'Cancel if it’s wrong'],
+            ['3', 'Trust next time'],
+          ].map(([number, label]) => (
+            <div
+              key={number}
+              className="rounded-xl border border-paper/10 bg-ink px-2 py-3"
+            >
+              <span className="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-accent text-[11px] font-semibold text-ink">
+                {number}
+              </span>
+              <p className="mt-2 leading-snug text-muted">{label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="rounded-2xl border border-paper/10 bg-ink-soft px-4 py-5 sm:p-6">
       <div className="mb-5 flex items-baseline justify-between gap-3">
@@ -168,12 +202,6 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
         </h2>
         <p className="text-xs uppercase tracking-[0.2em] text-muted">native</p>
       </div>
-
-      {!isConnected && (
-        <p className="mb-4 rounded-xl border border-dashed border-paper/15 px-4 py-3 text-sm text-muted">
-          Connect your wallet (top right) to send.
-        </p>
-      )}
 
       <form onSubmit={onSubmit} className="space-y-4">
         <label className="block space-y-1.5">
@@ -249,14 +277,13 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
                 risk.protected ? 'text-pending' : 'text-final'
               }`}
             >
-              {risk.protected ? 'Safety Mode on' : 'Instant · trusted'}
+              {risk.protected ? 'New recipient · protected' : 'Instant · trusted'}
             </p>
             <p className="mt-1 text-sm leading-relaxed text-paper/85">
               {risk.detail}
               {risk.protected && (
                 <>
-                  {' '}
-                  Unlocks in <strong>{coolOffLabel}</strong> unless you cancel.
+                  {' '}You can cancel for <strong>{coolOffLabel}</strong>.
                 </>
               )}
             </p>
@@ -264,7 +291,7 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
             {risk.protected && (
               <div className="mt-3">
                 <p className="mb-2 text-[11px] uppercase tracking-wider text-muted">
-                  Hold duration
+                  How long should this stay cancelable?
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {presets.map((p) => {
@@ -290,7 +317,7 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
 
             {risk.protected && (
               <p className="mt-2 text-xs text-muted">
-                Not payment for goods — wait until Final before shipping.
+                After the timer ends, MON can only be claimed to this recipient.
               </p>
             )}
           </div>
@@ -301,9 +328,7 @@ export function SendPanel({ onSuccess }: { onSuccess?: () => void }) {
           disabled={!canSend}
           className="w-full rounded-xl bg-accent px-4 py-3.5 text-sm font-semibold tracking-wide text-ink transition enabled:hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {!isConnected
-            ? 'Connect wallet first'
-            : !isContractConfigured
+          {!isContractConfigured
               ? 'Contract not configured'
               : statusLabel
                 ? statusLabel
