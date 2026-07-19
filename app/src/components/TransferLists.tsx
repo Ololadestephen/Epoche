@@ -14,6 +14,7 @@ import {
   getCachedTrustedList,
   getTrustedLabel,
   setTrustedLabel,
+  TRUSTED_LIST_CHANGED_EVENT,
   uncacheTrustedAddress,
 } from '../lib/trustedStore'
 
@@ -342,6 +343,16 @@ export function TrustedPanel({ onChange }: { onChange?: () => void }) {
 
   useEffect(() => {
     reload()
+    const handleTrustedListChange = () => reload()
+    window.addEventListener(TRUSTED_LIST_CHANGED_EVENT, handleTrustedListChange)
+    window.addEventListener('storage', handleTrustedListChange)
+    return () => {
+      window.removeEventListener(
+        TRUSTED_LIST_CHANGED_EVENT,
+        handleTrustedListChange,
+      )
+      window.removeEventListener('storage', handleTrustedListChange)
+    }
   }, [])
 
   // Only mutate local trusted cache after on-chain confirmation

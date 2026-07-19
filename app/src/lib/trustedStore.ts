@@ -2,8 +2,13 @@ import type { Address } from 'viem'
 
 const LIST_KEY = 'epoche.trustedList.v1'
 const LABEL_KEY = 'epoche.trustedLabels.v1'
+export const TRUSTED_LIST_CHANGED_EVENT = 'epoche:trusted-list-changed'
 
 type Labels = Record<string, string>
+
+function notifyTrustedListChanged() {
+  window.dispatchEvent(new Event(TRUSTED_LIST_CHANGED_EVENT))
+}
 
 function readLabels(): Labels {
   try {
@@ -32,6 +37,7 @@ export function setTrustedLabel(addr: Address | string, label: string) {
   if (!label.trim()) delete s[k]
   else s[k] = label.trim().slice(0, 32)
   writeLabels(s)
+  notifyTrustedListChanged()
 }
 
 export function cacheTrustedAddress(addr: Address | string) {
@@ -42,6 +48,7 @@ export function cacheTrustedAddress(addr: Address | string) {
     if (!list.includes(k)) {
       list.unshift(k)
       localStorage.setItem(LIST_KEY, JSON.stringify(list.slice(0, 40)))
+      notifyTrustedListChanged()
     }
   } catch {
     /* ignore */
@@ -59,6 +66,7 @@ export function uncacheTrustedAddress(addr: Address | string) {
     const labels = readLabels()
     delete labels[addr.toLowerCase()]
     writeLabels(labels)
+    notifyTrustedListChanged()
   } catch {
     /* ignore */
   }
