@@ -5,7 +5,7 @@ import { ConnectButton } from '../components/ConnectButton'
 import { NetworkBanner } from '../components/NetworkBanner'
 import { SendPanel } from '../components/SendPanel'
 import { TransferLists, TrustedPanel } from '../components/TransferLists'
-import { EPOCHE_ADDRESS, isContractConfigured } from '../lib/config'
+import { isContractConfigured } from '../lib/config'
 import { contractExplorerUrl } from '../lib/explorer'
 import { Status, useEpocheConfig, useMyTransfers } from '../hooks/useEpoche'
 import { useUnlockNotify } from '../hooks/useUnlockNotify'
@@ -198,7 +198,7 @@ export default function Dashboard() {
                 rel="noreferrer"
                 className="text-accent underline-offset-2 hover:underline"
               >
-                {EPOCHE_ADDRESS.slice(0, 8)}…{EPOCHE_ADDRESS.slice(-4)}
+                Contract
               </a>
             </p>
           )}
